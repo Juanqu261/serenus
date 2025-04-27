@@ -11,13 +11,13 @@ function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/admin" element={<Admin />} />
+      <Route path="/admin/*" element={<Admin />} />
       <Route path="/estudiante" element={<Ruta />} />
       <Route path="/estudiante/leccion/:lessonId" element={<LessonView />} />
       
       {/* Redirect root path to login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} /> {/* Optional: Add a catch-all route for unknown paths */}
+      {/* <Route path="*" element={<Navigate to="/login" replace />} /> Optional: Add a catch-all route for unknown paths */}
     </Routes>
   );
 }
