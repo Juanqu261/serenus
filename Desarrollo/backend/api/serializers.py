@@ -38,6 +38,7 @@ class EstresEstudianteSerializer(serializers.ModelSerializer):
 # Serializador para el segundo endpoint: Estres, Estudiante y carga_trabajo
 class EstresEstudianteCargaTrabajoSerializer(serializers.ModelSerializer):
     estudiante = EstudianteSerializer(source='estudiante_id')  # Relación con Estudiante
+    recomendaciones = RecomendacionesSerializer(source='recomendaciones_id')
     carga_trabajo = carga_trabajoSerializer(source='estudiante_id.carga_trabajo_set', many=True)  # Relacion con carga_trabajo
 
     class Meta:
