@@ -336,26 +336,7 @@ const StudentDetail: React.FC = () => {
         <div>
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             {/* Escala de acción */}
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">Datos de Estrés</h2>
-            
-            <div className="mb-6">
-              <h3 className="text-md font-medium text-gray-700 mb-2">Escala de acción</h3>
-              <div className="relative h-4 bg-gray-200 rounded-full mb-2">
-                <div 
-                  className="absolute h-full rounded-full bg-indigo-500"
-                  style={{ width: `${(estudianteData.escala_de_accion / 10) * 100}%` }}
-                ></div>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>0 - Baja</span>
-                <span>5 - Media</span>
-                <span>10 - Alta</span>
-              </div>
-              <p className="mt-2 text-sm text-gray-600">
-                Nivel de urgencia: <span className="font-semibold">{estudianteData.escala_de_accion.toFixed(1)}/10</span>
-              </p>
-            </div>
-            
+            {/* <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">Datos de Estrés</h2> */}
             <div className="flex justify-center">
               <Thermometer stressLevel={nivel_de_estres} />
             </div>
