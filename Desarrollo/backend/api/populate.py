@@ -104,6 +104,27 @@ def populate_database():
         descripcion="Organiza tu tiempo para mejorar tu rendimiento académico."
     )
 
+    # Crear recomendaciones basadas en niveles de estrés
+    recomendacion_nivel_bajo = Recomendaciones.objects.create(
+        descripcion="Mantén tus buenos hábitos. Continúa usando herramientas como Google Calendar para organizar tus tareas y practica técnicas breves de respiración entre clases."
+    )
+    
+    recomendacion_nivel_medio = Recomendaciones.objects.create(
+        descripcion="Practica técnicas de regulación emocional como la auto-observación y realiza una rutina diaria de relajación. Recuerda que no siempre se puede hacer todo perfecto."
+    )
+    
+    recomendacion_nivel_alto = Recomendaciones.objects.create(
+        descripcion="Te recomendamos hablar con un psicólogo o tutor. Aprende técnicas de afrontamiento activas y busca un espacio donde puedas expresar tus preocupaciones sin miedo a ser juzgado."
+    )
+    
+    recomendacion_nivel_muy_alto = Recomendaciones.objects.create(
+        descripcion="Necesitas apoyo emocional inmediato. Por favor, contacta con un profesional de salud mental lo antes posible. No te enfrentes a esto solo."
+    )
+    
+    recomendacion_proactiva = Recomendaciones.objects.create(
+        descripcion="Establece límites claros entre tus horas de estudio y descanso. Considera incluir actividad física regular para liberar tensión."
+    )
+
     # Crear niveles de estres
     Estres.objects.create(
         estudiante_id=estudiante1,
@@ -116,6 +137,40 @@ def populate_database():
         nivel_de_estres=5.0,
         escala_de_accion=6.0,
         recomendaciones_id=recomendacion2
+    )
+    Estres.objects.create(
+        estudiante_id=estudiante3,
+        nivel_de_estres=2.0,  # Nivel bajo
+        escala_de_accion=1.0,
+        recomendaciones_id=recomendacion_nivel_bajo
+    )
+    
+    Estres.objects.create(
+        estudiante_id=estudiante4,
+        nivel_de_estres=5.5,  # Nivel medio
+        escala_de_accion=2.0,
+        recomendaciones_id=recomendacion_nivel_medio
+    )
+    
+    Estres.objects.create(
+        estudiante_id=estudiante5,
+        nivel_de_estres=7.8,  # Nivel alto
+        escala_de_accion=3.0,
+        recomendaciones_id=recomendacion_nivel_alto
+    )
+    
+    Estres.objects.create(
+        estudiante_id=estudiante6,
+        nivel_de_estres=9.5,  # Nivel muy alto
+        escala_de_accion=4.0,
+        recomendaciones_id=recomendacion_nivel_muy_alto
+    )
+    
+    Estres.objects.create(
+        estudiante_id=estudiante7,
+        nivel_de_estres=6.2,  # Nivel medio-alto
+        escala_de_accion=2.5,
+        recomendaciones_id=recomendacion_proactiva
     )
 
     # Crear carga de trabajo
@@ -133,6 +188,50 @@ def populate_database():
         creditos=15,
         asistencia=85.0,
         numero_asignaturas=4,
+        horas_dedicadas=18
+    )
+    carga_trabajo.objects.create(
+        estudiante_id=estudiante3,
+        semestre="2023-1",
+        creditos=16,
+        asistencia=95.0,
+        numero_asignaturas=4,
+        horas_dedicadas=10
+    )
+    
+    carga_trabajo.objects.create(
+        estudiante_id=estudiante4,
+        semestre="2023-1",
+        creditos=22,
+        asistencia=70.0,
+        numero_asignaturas=6,
+        horas_dedicadas=30
+    )
+    
+    carga_trabajo.objects.create(
+        estudiante_id=estudiante5,
+        semestre="2023-1",
+        creditos=12,
+        asistencia=60.0,
+        numero_asignaturas=3,
+        horas_dedicadas=12
+    )
+    
+    carga_trabajo.objects.create(
+        estudiante_id=estudiante6,
+        semestre="2023-1",
+        creditos=24,
+        asistencia=98.0,
+        numero_asignaturas=7,
+        horas_dedicadas=40
+    )
+    
+    carga_trabajo.objects.create(
+        estudiante_id=estudiante7,
+        semestre="2023-1",
+        creditos=10,
+        asistencia=85.0,
+        numero_asignaturas=3,
         horas_dedicadas=18
     )
 
