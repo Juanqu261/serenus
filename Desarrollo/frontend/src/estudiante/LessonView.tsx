@@ -19,6 +19,7 @@ const LessonView: React.FC = () => {
   const [currentAnswer, setCurrentAnswer] = useState('');
   const [answers, setAnswers] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
 
   // Cargar la lección
   useEffect(() => {
@@ -40,8 +41,19 @@ const LessonView: React.FC = () => {
         
         // Si ya hay respuestas, cargar la pregunta correspondiente
         if (savedProgress.questionIndex > 0 && savedProgress.answers.length > 0) {
+          setIsLoading(true); // Activar carga
           const lastAnswer = savedProgress.answers[savedProgress.answers.length - 1];
-          setCurrentQuestion(getNextQuestion(lessonId, savedProgress.questionIndex, lastAnswer));
+          
+          getNextQuestion(lessonId, savedProgress.questionIndex, lastAnswer)
+            .then(nextQuestion => {
+              setCurrentQuestion(nextQuestion);
+              setIsLoading(false); // Desactivar carga
+            })
+            .catch(error => {
+              console.error('Error al cargar la pregunta guardada:', error);
+              setCurrentQuestion('¿Qué te gustaría compartir hoy?');
+              setIsLoading(false);
+            });
         }
       }
     } else {
@@ -50,7 +62,7 @@ const LessonView: React.FC = () => {
     }
   }, [lessonId, navigate]);
 
-  const handleAnswerSubmit = (event: React.FormEvent) => {
+  const handleAnswerSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!currentLesson || !lessonId || currentAnswer.trim() === '') return;
 
@@ -65,11 +77,20 @@ const LessonView: React.FC = () => {
       const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
       
-      // Generar la siguiente pregunta basada en la respuesta actual
-      const nextQuestion = getNextQuestion(lessonId, nextIndex, currentAnswer);
-      setCurrentQuestion(nextQuestion);
+      // Activar estado de carga
+      setIsLoading(true);
       
-      setCurrentAnswer(''); // Limpiar el input
+      try {
+        // Generar la siguiente pregunta basada en la respuesta actual
+        const nextQuestion = await getNextQuestion(lessonId, nextIndex, currentAnswer);
+        setCurrentQuestion(nextQuestion);
+      } catch (error) {
+        console.error('Error al obtener la siguiente pregunta:', error);
+        setCurrentQuestion('¿Podrías hablarme más sobre eso?');
+      } finally {
+        setIsLoading(false); // Desactivar carga independientemente del resultado
+        setCurrentAnswer(''); // Limpiar el input
+      }
     } else {
       // Lección terminada (5 preguntas respondidas)
       setIsCompleted(true);
@@ -121,24 +142,33 @@ const LessonView: React.FC = () => {
         <h2 className="text-2xl font-semibold mb-2 text-blue-800">{currentLesson.name}</h2>
         <p className="text-sm text-gray-500 mb-6">Pregunta {currentQuestionIndex + 1} de 5</p>
 
-        <p className="text-lg mb-6 text-gray-700">{currentQuestion}</p>
+        {isLoading ? (
+          <div className="flex flex-col items-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+            <p className="text-gray-600">Generando siguiente pregunta...</p>
+          </div>
+        ) : (
+          <>
+            <p className="text-lg mb-6 text-gray-700">{currentQuestion}</p>
 
-        <form onSubmit={handleAnswerSubmit} className="space-y-4">
-          <textarea
-            className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={4}
-            placeholder="Escribe tu respuesta aquí..."
-            value={currentAnswer}
-            onChange={(e) => setCurrentAnswer(e.target.value)}
-            required
-          />
-          <button
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors shadow-md"
-            type="submit"
-          >
-            {currentQuestionIndex === 4 ? 'Finalizar' : 'Siguiente'}
-          </button>
-        </form>
+            <form onSubmit={handleAnswerSubmit} className="space-y-4">
+              <textarea
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={4}
+                placeholder="Escribe tu respuesta aquí..."
+                value={currentAnswer}
+                onChange={(e) => setCurrentAnswer(e.target.value)}
+                required
+              />
+              <button
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors shadow-md"
+                type="submit"
+              >
+                {currentQuestionIndex === 4 ? 'Finalizar' : 'Siguiente'}
+              </button>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );

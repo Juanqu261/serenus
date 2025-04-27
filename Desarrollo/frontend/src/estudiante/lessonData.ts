@@ -1,3 +1,5 @@
+import { sendMessageToBackend } from '../chat/chatbotService';
+
 export interface Achievement {
   id: string;
   lessonId: string;
@@ -11,6 +13,8 @@ export interface Lesson {
   description: string;
   initialQuestion: string;
   achievement: Achievement;
+  // Contexto para que la IA entienda de qué trata la lección
+  context: string;
 }
 
 export const lessons: Lesson[] = [
@@ -19,28 +23,32 @@ export const lessons: Lesson[] = [
     name: 'Bosque de la Calma',
     description: 'Encuentra la tranquilidad y aprende a manejar el estrés.',
     initialQuestion: 'Hola, ¿cómo estás?',
-    achievement: { id: 'ach-bosque', lessonId: 'bosque-calma', name: 'Guardián de la Calma', icon: '🌳' }
+    achievement: { id: 'ach-bosque', lessonId: 'bosque-calma', name: 'Guardián de la Calma', icon: '🌳' },
+    context: 'Esta lección se enfoca en técnicas de manejo del estrés, mindfulness y respiración. El objetivo es ayudar al estudiante a encontrar calma interior.'
   },
   {
     id: 'montana-resiliencia',
     name: 'Montaña de la Resiliencia',
     description: 'Descubre tu fortaleza interior y cómo superar obstáculos.',
     initialQuestion: 'Hola, ¿cómo estás?',
-    achievement: { id: 'ach-montana', lessonId: 'montana-resiliencia', name: 'Escalador Resiliente', icon: '⛰️' }
+    achievement: { id: 'ach-montana', lessonId: 'montana-resiliencia', name: 'Escalador Resiliente', icon: '⛰️' },
+    context: 'Esta lección se enfoca en desarrollar resiliencia, superar obstáculos y encontrar fortaleza interior ante situaciones adversas.'
   },
   {
     id: 'rio-emociones',
     name: 'Río de las Emociones',
     description: 'Aprende a navegar tus sentimientos y emociones.',
     initialQuestion: 'Hola, ¿cómo estás?',
-    achievement: { id: 'ach-rio', lessonId: 'rio-emociones', name: 'Navegante Emocional', icon: '💧' }
+    achievement: { id: 'ach-rio', lessonId: 'rio-emociones', name: 'Navegante Emocional', icon: '💧' },
+    context: 'Esta lección se enfoca en la inteligencia emocional, reconocimiento y gestión de emociones para un mejor bienestar psicológico.'
   },
   {
     id: 'jardin-autoestima',
     name: 'Jardín de la Autoestima',
     description: 'Cultiva tu amor propio y confianza personal.',
     initialQuestion: 'Hola, ¿cómo estás?',
-    achievement: { id: 'ach-jardin', lessonId: 'jardin-autoestima', name: 'Jardinero de la Confianza', icon: '🌻' }
+    achievement: { id: 'ach-jardin', lessonId: 'jardin-autoestima', name: 'Jardinero de la Confianza', icon: '🌻' },
+    context: 'Esta lección se enfoca en construir autoestima, amor propio y confianza personal a través de prácticas y reflexiones positivas.'
   }
 ];
 
@@ -97,64 +105,51 @@ export const getLessonProgress = () => {
   return stored ? JSON.parse(stored) : {};
 };
 
-export const getNextQuestion = (lessonId: string, questionIndex: number, previousAnswer: string): string => {
-  // Preguntas dinámicas basadas en respuestas anteriores
+export const getNextQuestion = async (lessonId: string, questionIndex: number, previousAnswer: string): Promise<string> => {
+  const lesson = lessons.find(l => l.id === lessonId);
   
-  // Bosque de la Calma
-  if (lessonId === 'bosque-calma') {
-    const questions = [
-      'Hola, ¿cómo estás?',
-      previousAnswer.toLowerCase().includes('mal') || previousAnswer.toLowerCase().includes('estres') ? 
-        '¿Qué situaciones te causan más estrés últimamente?' : 
-        '¿Qué actividades te ayudan a sentirte tranquilo?',
-      '¿Has probado técnicas de respiración o meditación? ¿Cómo fue tu experiencia?',
-      'Imagina que estás en un bosque tranquilo. ¿Qué ves, oyes y sientes?',
-      '¿Qué pequeña acción podrías tomar hoy para sentirte más en calma?'
-    ];
-    return questions[questionIndex] || '';
+  // Si es la primera pregunta, siempre es "Hola, ¿cómo estás?"
+  if (questionIndex === 0) {
+    return 'Hola, ¿cómo estás?';
   }
   
-  // Montaña de la Resiliencia
-  else if (lessonId === 'montana-resiliencia') {
-    const questions = [
-      'Hola, ¿cómo estás?',
-      previousAnswer.toLowerCase().includes('bien') ? 
-        '¿Recuerdas un momento difícil que hayas superado? ¿Qué te ayudó?' : 
-        '¿Qué te ayuda a seguir adelante cuando enfrentas dificultades?',
-      '¿Qué fortalezas personales has descubierto en momentos difíciles?',
-      'Si pudieras dar un consejo a alguien que está pasando por un momento difícil, ¿qué le dirías?',
-      '¿Qué pequeño paso podrías dar hoy para fortalecer tu resiliencia?'
-    ];
-    return questions[questionIndex] || '';
+  // Si no encontramos la lección o no tiene contexto
+  if (!lesson) {
+    return 'Hola, ¿cómo puedo ayudarte hoy?';
   }
   
-  // Río de las Emociones
-  else if (lessonId === 'rio-emociones') {
-    const questions = [
-      'Hola, ¿cómo estás?',
-      '¿Qué emoción has sentido con más frecuencia últimamente?',
-      previousAnswer.toLowerCase().includes('triste') || previousAnswer.toLowerCase().includes('enojo') ?
-        '¿Cómo expresas estas emociones difíciles?' : 
-        '¿Cómo celebras y compartes tus emociones positivas?',
-      '¿Hay alguna emoción que te resulte difícil de manejar? ¿Cuál y por qué?',
-      '¿Qué estrategia podrías practicar para gestionar mejor tus emociones?'
+  try {
+    // Construir el mensaje para el chatbot
+    const prompt = `
+      [CONTEXTO]: Estás actuando como un asistente psicológico que guía una lección sobre "${lesson.name}". 
+      ${lesson.context}
+      
+      [INSTRUCCIONES]: 
+      - Has recibido la respuesta de un estudiante a una pregunta anterior.
+      - Genera UNA sola pregunta terapéutica relevante que ayude al estudiante a reflexionar más profundamente.
+      - La pregunta debe ser clara, concisa y abierta (no de sí/no).
+      - No agregues ningún texto adicional, solo la pregunta.
+      - Esta es la pregunta número ${questionIndex+1} de un total de 5 en esta lección.
+      
+      [RESPUESTA PREVIA DEL ESTUDIANTE]: "${previousAnswer}"
+      
+      [TU PREGUNTA]:
+    `;
+    
+    // Enviar al servicio de chatbot
+    const nextQuestion = await sendMessageToBackend(prompt);
+    return nextQuestion.trim() || '¿Podrías contarme más sobre eso?';
+  } catch (error) {
+    console.error('Error al obtener la siguiente pregunta:', error);
+    
+    // Preguntas de respaldo en caso de error
+    const fallbackQuestions = [
+      '¿Puedes contarme más sobre cómo te sientes respecto a eso?',
+      '¿Qué pensamientos surgen cuando reflexionas sobre este tema?',
+      '¿Cómo crees que podrías aplicar lo que estamos discutiendo en tu día a día?',
+      '¿Qué estrategias te han funcionado en situaciones similares?'
     ];
-    return questions[questionIndex] || '';
+    
+    return fallbackQuestions[Math.min(questionIndex - 1, fallbackQuestions.length - 1)];
   }
-  
-  // Jardín de la Autoestima
-  else if (lessonId === 'jardin-autoestima') {
-    const questions = [
-      'Hola, ¿cómo estás?',
-      '¿Qué es lo que más valoras de ti mismo/a?',
-      previousAnswer.toLowerCase().includes('no') || previousAnswer.toLowerCase().includes('poco') ?
-        '¿Recuerdas algún logro del que te sientas orgulloso/a?' : 
-        '¿Cómo alimentas tu confianza en ti mismo/a?',
-      '¿Qué mensaje positivo te gustaría recordar en momentos de duda?',
-      '¿Qué acción podrías realizar hoy para cuidar tu autoestima?'
-    ];
-    return questions[questionIndex] || '';
-  }
-  
-  return 'Hola, ¿cómo estás?'; // Pregunta por defecto
 };
