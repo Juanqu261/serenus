@@ -1,4 +1,4 @@
-import { sendMessageToBackend } from '../chat/chatbotService';
+import { sendMessageToBackend, sendMessageToIA } from '../chat/chatbotService';
 
 export interface Achievement {
   id: string;
@@ -137,7 +137,7 @@ export const getNextQuestion = async (lessonId: string, questionIndex: number, p
     `;
     
     // Enviar al servicio de chatbot
-    const nextQuestion = await sendMessageToBackend(prompt);
+    const nextQuestion = await sendMessageToIA(prompt);
     return nextQuestion.trim() || '¿Podrías contarme más sobre eso?';
   } catch (error) {
     console.error('Error al obtener la siguiente pregunta:', error);
