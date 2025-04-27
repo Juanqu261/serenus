@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { lessons, getUnlockedLessons, Lesson } from './lessonData';
 import AchievementDisplay from './AchievementDisplay';
@@ -7,7 +6,7 @@ function Ruta() {
   const unlockedLessons = getUnlockedLessons();
 
   return (
-    <div className="container mx-auto p-6 bg-gray-900 text-white">
+    <div className="p-6 bg-gray-900 text-white">
       <img src="/LogoSerenus.png" alt="logo" className="w-48 h-auto" />
       <h1 className="text-3xl font-bold mb-4 text-center text-blue-300">Tu Camino de Bienestar</h1>
       <p className="text-center text-gray-400 mb-8">
