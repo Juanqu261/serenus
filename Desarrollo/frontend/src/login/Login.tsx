@@ -22,8 +22,8 @@ function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Serenus - Asistente Psicológico</h1>
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-cyan-500 to-blue-500">
+      <img src="/LogoSerenus.png" alt="logo" className="w-48 h-auto mb-4" />
       <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-full max-w-sm">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
