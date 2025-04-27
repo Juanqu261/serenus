@@ -50,7 +50,7 @@ const NumberLine: React.FC<NumberLineProps> = ({ value, min, max, label, unit = 
           className={`absolute h-full rounded-full bg-${color}-500 flex items-center justify-end pr-1`}
           style={{ width: `${percentage}%`, minWidth: '1.5rem' }}
         >
-          <div className={`h-6 w-6 absolute right-0 transform translate-x-1/2 -translate-y-1 bg-${color}-600 rounded-full border-2 border-white`}></div>
+          {/* <div className={`h-6 w-6 absolute right-0 transform translate-x-1/2 -translate-y-1 bg-${color}-600 rounded-full border-2 border-white`}></div> */}
         </div>
         
         {/* Valores min-max */}
@@ -75,6 +75,7 @@ const Thermometer: React.FC<ThermometerProps> = ({ stressLevel }) => {
   const getColor = () => {
     if (stressLevel <= 3) return 'bg-gradient-to-t from-green-500 to-green-300';
     if (stressLevel <= 6) return 'bg-gradient-to-t from-yellow-500 to-yellow-300';
+    if (stressLevel <= 8) return 'bg-gradient-to-t from-orange-500 to-orange-300';
     return 'bg-gradient-to-t from-red-500 to-red-300';
   };
   
@@ -109,7 +110,7 @@ const Thermometer: React.FC<ThermometerProps> = ({ stressLevel }) => {
         </div>
         
         {/* Bulbo del termómetro */}
-        <div className={`absolute bottom-0 left-0 w-16 h-16 rounded-full ${getColor()} border border-gray-300`}></div>
+        {/* <div className={`absolute bottom-0 left-0 w-16 h-16 rounded-full ${getColor()} border border-gray-300`}></div> */}
       </div>
       
       <div className="text-center">
@@ -145,7 +146,7 @@ const StudentDetail: React.FC = () => {
         attendancePercentage: 85, // %
         weeklyDedication: 12, // horas
         programProgress: 68, // %
-        stressLevel: 7, // de 10
+        stressLevel: 8, // de 10
         credits: 6 // cantidad de créditos
       };
       
@@ -222,7 +223,7 @@ const StudentDetail: React.FC = () => {
               min={0}
               max={student.credits * 3}
               unit="h"
-              color="purple"
+              color="yellow"
             />
             
             <NumberLine 
@@ -231,7 +232,7 @@ const StudentDetail: React.FC = () => {
               min={0}
               max={100}
               unit="%"
-              color="indigo"
+              color="red"
             />
           </div>
           
