@@ -9,8 +9,8 @@ class EstudianteSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EstresSerializer(serializers.ModelSerializer):
-    estudiante = EstudianteSerializer(source='estudiante_id')  # Relación con Estudiante
-    recomendaciones = serializers.StringRelatedField()  # Mostrar descripción de recomendaciones
+    estudiante = EstudianteSerializer(source='estudiante_id')  # Relacion con Estudiante
+    recomendaciones = serializers.StringRelatedField()  # Mostrar descripcion de recomendaciones
 
     class Meta:
         model = Estres
@@ -38,7 +38,7 @@ class EstresEstudianteSerializer(serializers.ModelSerializer):
 # Serializador para el segundo endpoint: Estres, Estudiante y carga_trabajo
 class EstresEstudianteCargaTrabajoSerializer(serializers.ModelSerializer):
     estudiante = EstudianteSerializer(source='estudiante_id')  # Relación con Estudiante
-    carga_trabajo = carga_trabajoSerializer(source='estudiante_id.carga_trabajo_set', many=True)  # Relación con carga_trabajo
+    carga_trabajo = carga_trabajoSerializer(source='estudiante_id.carga_trabajo_set', many=True)  # Relacion con carga_trabajo
 
     class Meta:
         model = Estres

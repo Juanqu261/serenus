@@ -10,5 +10,5 @@ router.register(r'estres-estudiantes-carga-trabajo', EstresEstudianteCargaTrabaj
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('ia/', ia_view),  # Nueva ruta para el endpoint /ia
+    path('ia/', ia_view),  # Ruta para el endpoint /ia
 ]

@@ -66,7 +66,7 @@ AUTH_USER_MODEL = 'api.Persona'
 
 # Configuración de REST Framework para desarrollo (sin autenticación ni permisos)
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],  # Deshabilitar autenticación
+    'DEFAULT_AUTHENTICATION_CLASSES': [],  # Deshabilitar autenticacion en desarrollo
     'DEFAULT_PERMISSION_CLASSES': [  # Permitir acceso sin restricciones
         'rest_framework.permissions.AllowAny',
     ],

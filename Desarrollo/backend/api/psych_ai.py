@@ -1,14 +1,14 @@
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import (
+from langchain_google_genai import ChatGoogleGenerativeAI # type: ignore
+from langchain.chains import ConversationChain # type: ignore
+from langchain.memory import ConversationBufferMemory # type: ignore
+from langchain.prompts import ( # type: ignore
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
     MessagesPlaceholder,
 )
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -29,13 +29,13 @@ class PsychologyAI:
             verbose=True
         )
         
-        # Inicializar la memoria de conversación
+        # Inicializar la memoria de conversacion
         self.memory = ConversationBufferMemory(
             return_messages=True,
             memory_key="chat_history"
         )
         
-        # Crear un prompt especializado en psicología
+        # Crear un prompt especializado en psicologia
         prompt = ChatPromptTemplate.from_messages([
             SystemMessagePromptTemplate.from_template(
                 "Eres una IA experta en psicología con amplio conocimiento en terapia, "
@@ -52,7 +52,7 @@ class PsychologyAI:
             HumanMessagePromptTemplate.from_template("{input}")
         ])
         
-        # Crear la cadena de conversación
+        # Crear la cadena de conversacion
         self.conversation = ConversationChain(
             llm=self.llm,
             memory=self.memory,
@@ -76,5 +76,5 @@ class PsychologyAI:
         """Reinicia la memoria de la conversación."""
         self.memory.clear()
 
-# Instancia singleton para usar en toda la aplicación
+# Instancia singleton para usar en toda la aplicacion
 psychology_ai = PsychologyAI()

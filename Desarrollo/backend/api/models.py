@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class Rol(models.Model):
-    nombre = models.CharField(max_length=100, primary_key=True)  # Se usa como clave primaria
+    nombre = models.CharField(max_length=100, primary_key=True)
     
     class Meta:
         db_table = 'rol'
@@ -17,7 +17,7 @@ class PersonaManager(BaseUserManager):
         
         persona = self.model(
             usuario=self.normalize_email(usuario),
-            rol_id=rol  # Ajuste para usar el nuevo campo con _id
+            rol_id=rol
         )
         
         persona.set_password(contraseña)
@@ -56,16 +56,15 @@ class Estudiante(models.Model):
     def __str__(self):
         return f"{self.nombres} {self.apellidos}"
 
-class carga_trabajo(models.Model):  # Renombrado desde MateriaEstudiante
+class carga_trabajo(models.Model):
     estudiante_id = models.ForeignKey(Estudiante, on_delete=models.CASCADE, db_column='estudiante_id')
     semestre = models.CharField(max_length=100)
     creditos = models.IntegerField()
-    asistencia = models.FloatField()
     numero_asignaturas = models.IntegerField()
     horas_dedicadas = models.IntegerField()
 
     class Meta:
-        db_table = 'carga_trabajo'  # Cambiado el nombre de la tabla
+        db_table = 'carga_trabajo'
         unique_together = (('estudiante_id', 'semestre'),)
 
     def __str__(self):
@@ -81,10 +80,10 @@ class Recomendaciones(models.Model):
         return self.descripcion[:50]  # Retorna los primeros 50 caracteres
 
 class Estres(models.Model):
-    estudiante_id = models.OneToOneField(Estudiante, on_delete=models.CASCADE, primary_key=True, db_column='estudiante_id')  # Se agrega _id
+    estudiante_id = models.OneToOneField(Estudiante, on_delete=models.CASCADE, primary_key=True, db_column='estudiante_id')
     nivel_de_estres = models.FloatField()
     escala_de_accion = models.FloatField()
-    recomendaciones_id = models.ForeignKey(Recomendaciones, on_delete=models.CASCADE, db_column='recomendaciones_id')  # Se agrega _id
+    recomendaciones_id = models.ForeignKey(Recomendaciones, on_delete=models.CASCADE, db_column='recomendaciones_id')
 
     class Meta:
         db_table = 'estres'
@@ -93,7 +92,7 @@ class Estres(models.Model):
         return f"Estres de {self.estudiante_id}"
 
 class Asignatura(models.Model):
-    nombre = models.CharField(max_length=100, primary_key=True)  # Se usa como clave primaria
+    nombre = models.CharField(max_length=100, primary_key=True)
     tasa_desercion = models.FloatField()
     tasa_aprobacion = models.FloatField()
     horario = models.CharField(max_length=100)
@@ -105,12 +104,12 @@ class Asignatura(models.Model):
         return self.nombre
     
 class Asistencia(models.Model):
-    estudiante_id = models.ForeignKey(Estudiante, on_delete=models.CASCADE, db_column='estudiante_id')  # Se agrega _id
-    asignatura_id = models.ForeignKey(Asignatura, on_delete=models.CASCADE, db_column='asignatura_id')  # Se agrega _id
+    estudiante_id = models.ForeignKey(Estudiante, on_delete=models.CASCADE, db_column='estudiante_id')
+    asignatura_id = models.ForeignKey(Asignatura, on_delete=models.CASCADE, db_column='asignatura_id')
     porcentaje_asistencia = models.FloatField()
     interacciones_plataforma = models.IntegerField()
-    nota = models.FloatField()  # Campo fusionado de RendimientoAcademico
-    repetida = models.BooleanField(default=False)  # Campo fusionado de RendimientoAcademico
+    nota = models.FloatField()
+    repetida = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'asistencia'
@@ -120,7 +119,7 @@ class Asistencia(models.Model):
         return f"Asistencia de {self.estudiante_id} en {self.asignatura_id}"
 
 class Evaluacion(models.Model):
-    asignatura_id = models.ForeignKey(Asignatura, on_delete=models.CASCADE, db_column='asignatura_id')  # Se agrega _id
+    asignatura_id = models.ForeignKey(Asignatura, on_delete=models.CASCADE, db_column='asignatura_id')
     tipo = models.CharField(max_length=50)  # Ejemplo: "Examen", "Proyecto"
     peso = models.FloatField()
     fecha = models.DateField()

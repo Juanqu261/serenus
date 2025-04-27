@@ -2,7 +2,7 @@ import os
 import sys
 import django
 
-# Agregar el directorio raíz del proyecto al PYTHONPATH
+# Agregar el directorio raiz del proyecto al PYTHONPATH
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Configurar el entorno de Django
@@ -48,7 +48,7 @@ def populate_database():
         descripcion="Organiza tu tiempo para mejorar tu rendimiento académico."
     )
 
-    # Crear niveles de estrés
+    # Crear niveles de estres
     Estres.objects.create(
         estudiante_id=estudiante1,
         nivel_de_estres=7.5,

@@ -6,20 +6,20 @@ from .serializers import (
     EstresEstudianteSerializer,
     EstresEstudianteCargaTrabajoSerializer
 )
-from .psych_ai import psychology_ai  # Importando nuestra IA de psicología
+from .psych_ai import psychology_ai  # Importando nuestra IA de psicologia
 
 
 # Vista para el primer endpoint: Estres y Estudiante
 class EstresEstudianteViewSet(viewsets.ModelViewSet):
     queryset = Estres.objects.select_related('estudiante_id').all()  # Optimiza la consulta con select_related
     serializer_class = EstresEstudianteSerializer
-    permission_classes = []  # Sin restricciones de permisos
+    permission_classes = []  # Sin restricciones de permisos (desarrollo)
 
 # Vista para el segundo endpoint: Estres, Estudiante y carga_trabajo
 class EstresEstudianteCargaTrabajoViewSet(viewsets.ModelViewSet):
     queryset = Estres.objects.prefetch_related('estudiante_id__carga_trabajo_set').all()  # Optimiza con prefetch_related
     serializer_class = EstresEstudianteCargaTrabajoSerializer
-    permission_classes = []  # Eliminar restricciones de permisos
+    permission_classes = []
 
 @api_view(['POST'])
 def ia_view(request):

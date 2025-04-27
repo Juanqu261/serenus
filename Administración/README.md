@@ -4,12 +4,12 @@
 
 ### Para las 11PM
 **Juan Esteban:** Definir Acción,
-**Juan Felipe:** Definir Detección,
+**Juan Fernando:** Definir Detección,
 **Abraham:** Base de Datos y Endpoints,
 **Alejandro:** Diseños Responsive
 
 ### Para la 1AM
-**Juan Esteban y Juan Felipe:**
+**Juan Esteban y Juan Fernando:**
 Conciliación entre detección y acción
 
 ### Para las 3AM
@@ -17,7 +17,7 @@ Conciliación entre detección y acción
 
 ### Para las 5AM
 **Abraham y Alejandro:** Servicios,
-**Juan Felipe y Juan Esteban:** Frontend
+**Juan Fernando y Juan Esteban:** Frontend
 
 ### Descanso de 5AM a 9AM
 **Nadie trabaja**
