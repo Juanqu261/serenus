@@ -10,6 +10,20 @@ import {
   getNextQuestion
 } from './lessonData';
 
+// Definir las imágenes de emociones disponibles
+const mascotEmotions = [
+  '/Alegre.png',
+  '/Asombrado.png',
+  '/Confiado.png',
+  '/Triste.png'
+];
+
+// Función para obtener una imagen aleatoria
+const getRandomEmotionImage = (): string => {
+  const randomIndex = Math.floor(Math.random() * mascotEmotions.length);
+  return mascotEmotions[randomIndex];
+};
+
 const LessonView: React.FC = () => {
   const { lessonId } = useParams<{ lessonId?: string }>();
   const navigate = useNavigate();
@@ -20,6 +34,7 @@ const LessonView: React.FC = () => {
   const [answers, setAnswers] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la carga
+  const [currentEmotionImage, setCurrentEmotionImage] = useState<string>('');
 
   // Cargar la lección
   useEffect(() => {
@@ -30,6 +45,8 @@ const LessonView: React.FC = () => {
       setCurrentLesson(lesson);
       // Cargar pregunta inicial
       setCurrentQuestion(lesson.initialQuestion);
+      // Establecer una imagen de emoción aleatoria inicial
+      setCurrentEmotionImage(getRandomEmotionImage());
       
       // Recuperar progreso guardado
       const allProgress = getLessonProgress();
@@ -47,11 +64,13 @@ const LessonView: React.FC = () => {
           getNextQuestion(lessonId, savedProgress.questionIndex, lastAnswer)
             .then(nextQuestion => {
               setCurrentQuestion(nextQuestion);
+              setCurrentEmotionImage(getRandomEmotionImage()); // Actualizar imagen de emoción
               setIsLoading(false); // Desactivar carga
             })
             .catch(error => {
               console.error('Error al cargar la pregunta guardada:', error);
               setCurrentQuestion('¿Qué te gustaría compartir hoy?');
+              setCurrentEmotionImage(getRandomEmotionImage()); // Actualizar imagen de emoción
               setIsLoading(false);
             });
         }
@@ -84,9 +103,11 @@ const LessonView: React.FC = () => {
         // Generar la siguiente pregunta basada en la respuesta actual
         const nextQuestion = await getNextQuestion(lessonId, nextIndex, currentAnswer);
         setCurrentQuestion(nextQuestion);
+        setCurrentEmotionImage(getRandomEmotionImage()); // Actualizar imagen de emoción
       } catch (error) {
         console.error('Error al obtener la siguiente pregunta:', error);
         setCurrentQuestion('¿Podrías hablarme más sobre eso?');
+        setCurrentEmotionImage(getRandomEmotionImage()); // Actualizar imagen de emoción
       } finally {
         setIsLoading(false); // Desactivar carga independientemente del resultado
         setCurrentAnswer(''); // Limpiar el input
@@ -149,7 +170,18 @@ const LessonView: React.FC = () => {
           </div>
         ) : (
           <>
-            <p className="text-lg mb-6 text-gray-300">{currentQuestion}</p>
+            <div className="flex items-start mb-6">
+              <div className="flex-grow">
+                <p className="text-lg text-gray-300">{currentQuestion}</p>
+              </div>
+              <div className="ml-4 flex-shrink-0">
+                <img
+                  src={currentEmotionImage}
+                  alt="Mascota"
+                  className="w-24 h-24 rounded-full shadow-md"
+                />
+              </div>
+            </div>
 
             <form onSubmit={handleAnswerSubmit} className="space-y-4">
               <textarea
