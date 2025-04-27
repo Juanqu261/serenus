@@ -1,6 +1,6 @@
 from rest_framework import serializers # type: ignore
 from .models import (
-    Rol, Persona, Estudiante, carga_trabajo, Estres, Recomendaciones
+    Estudiante, carga_trabajo, Estres, Recomendaciones
 )
 
 class EstudianteSerializer(serializers.ModelSerializer):
