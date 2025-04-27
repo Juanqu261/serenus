@@ -1,0 +1,80 @@
+import os
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    SystemMessagePromptTemplate,
+    MessagesPlaceholder,
+)
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
+
+class PsychologyAI:
+    """
+    IA experta en psicología implementada con LangChain y Google Gemini.
+    Mantiene memoria de la conversación para proporcionar respuestas
+    contextualizadas.
+    """
+    
+    def __init__(self):
+        """Inicializa la IA con el modelo, la memoria y el prompt personalizado."""
+        # Inicializar el modelo de lenguaje Gemini
+        self.llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-pro",  # Usar el modelo Gemini Pro
+            temperature=0.7,
+            verbose=True
+        )
+        
+        # Inicializar la memoria de conversación
+        self.memory = ConversationBufferMemory(
+            return_messages=True,
+            memory_key="chat_history"
+        )
+        
+        # Crear un prompt especializado en psicología
+        prompt = ChatPromptTemplate.from_messages([
+            SystemMessagePromptTemplate.from_template(
+                "Eres una IA experta en psicología con amplio conocimiento en terapia, "
+                "salud mental, desarrollo personal y bienestar emocional. Tu objetivo es "
+                "proporcionar apoyo, información y orientación basada en principios "
+                "psicológicos establecidos. Recuerda que:"
+                "\n\n1. No puedes diagnosticar condiciones médicas o psicológicas."
+                "\n2. Debes recomendar buscar ayuda profesional cuando sea apropiado."
+                "\n3. Tus respuestas deben ser empáticas, respetuosas y basadas en evidencia."
+                "\n4. Tu enfoque debe ser educativo y de apoyo, nunca prescriptivo."
+                "\n5. Debes adaptar tus respuestas al contexto de la conversación completa."
+            ),
+            MessagesPlaceholder(variable_name="chat_history"),
+            HumanMessagePromptTemplate.from_template("{input}")
+        ])
+        
+        # Crear la cadena de conversación
+        self.conversation = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            prompt=prompt,
+            verbose=True
+        )
+    
+    def process_message(self, message):
+        """
+        Procesa un mensaje del usuario y devuelve la respuesta de la IA.
+        
+        Args:
+            message (str): El mensaje del usuario
+            
+        Returns:
+            str: La respuesta de la IA
+        """
+        return self.conversation.predict(input=message)
+    
+    def reset_memory(self):
+        """Reinicia la memoria de la conversación."""
+        self.memory.clear()
+
+# Instancia singleton para usar en toda la aplicación
+psychology_ai = PsychologyAI()
