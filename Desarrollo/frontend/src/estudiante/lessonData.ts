@@ -1,4 +1,4 @@
-import { sendMessageToBackend, sendMessageToIA } from '../chat/chatbotService';
+import { sendMessageToIA, resetIAMemory } from '../chat/chatbotService';
 
 export interface Achievement {
   id: string;
@@ -105,7 +105,7 @@ export const getLessonProgress = () => {
   return stored ? JSON.parse(stored) : {};
 };
 
-export const getNextQuestion = async (lessonId: string, questionIndex: number, previousAnswer: string): Promise<string> => {
+export const getNextQuestion = async (lessonId: string, questionIndex: number, previousAnswer: string, resetMemory: boolean = false): Promise<string> => {
   const lesson = lessons.find(l => l.id === lessonId);
   
   // Si es la primera pregunta, siempre es "Hola, ¿cómo estás?"
@@ -136,8 +136,8 @@ export const getNextQuestion = async (lessonId: string, questionIndex: number, p
       [TU PREGUNTA]:
     `;
     
-    // Enviar al servicio de chatbot
-    const nextQuestion = await sendMessageToIA(prompt);
+    // Enviar al servicio de chatbot, indicando si se debe resetear la memoria
+    const nextQuestion = await sendMessageToIA(prompt, resetMemory);
     return nextQuestion.trim() || '¿Podrías contarme más sobre eso?';
   } catch (error) {
     console.error('Error al obtener la siguiente pregunta:', error);
@@ -153,3 +153,6 @@ export const getNextQuestion = async (lessonId: string, questionIndex: number, p
     return fallbackQuestions[Math.min(questionIndex - 1, fallbackQuestions.length - 1)];
   }
 };
+
+// Re-export the resetIAMemory function from chatbotService
+export { resetIAMemory };
