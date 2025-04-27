@@ -49,6 +49,39 @@ export const lessons: Lesson[] = [
     initialQuestion: 'Hola, ¿cómo estás?',
     achievement: { id: 'ach-jardin', lessonId: 'jardin-autoestima', name: 'Jardinero de la Confianza', icon: '🌻' },
     context: 'Esta lección se enfoca en construir autoestima, amor propio y confianza personal a través de prácticas y reflexiones positivas.'
+  },
+  
+  {
+    id: 'mar-relaciones',
+    name: 'Mar de las Relaciones',
+    description: 'Fortalece tus vínculos y aprende a comunicarte mejor.',
+    initialQuestion: 'Hola, ¿cómo estás?',
+    achievement: { id: 'ach-mar', lessonId: 'mar-relaciones', name: 'Navegante de Relaciones', icon: '🌊' },
+    context: 'Esta lección se enfoca en mejorar habilidades de comunicación, fortalecer relaciones interpersonales y resolver conflictos.'
+  },
+  {
+    id: 'cielo-optimismo',
+    name: 'Cielo del Optimismo',
+    description: 'Desarrolla una mentalidad positiva y resiliente.',
+    initialQuestion: 'Hola, ¿cómo estás?',
+    achievement: { id: 'ach-cielo', lessonId: 'cielo-optimismo', name: 'Explorador Optimista', icon: '☀️' },
+    context: 'Esta lección se enfoca en cultivar una mentalidad positiva, optimismo y resiliencia ante los desafíos de la vida.'
+  },
+  {
+    id: 'desierto-autocuidado',
+    name: 'Desierto del Autocuidado',
+    description: 'Aprende a cuidar de ti mismo y priorizar tu bienestar.',
+    initialQuestion: 'Hola, ¿cómo estás?',
+    achievement: { id: 'ach-desierto', lessonId: 'desierto-autocuidado', name: 'Guardián del Autocuidado', icon: '🏜️' },
+    context: 'Esta lección se enfoca en la importancia del autocuidado, prácticas saludables y cómo priorizar el bienestar personal.'
+  },
+  {
+    id: 'isla-mindfulness',
+    name: 'Isla del Mindfulness',
+    description: 'Descubre el poder de vivir en el presente.',
+    initialQuestion: 'Hola, ¿cómo estás?',
+    achievement: { id: 'ach-isla', lessonId: 'isla-mindfulness', name: 'Explorador Mindful', icon: '🏝️' },
+    context: 'Esta lección se enfoca en técnicas de mindfulness, meditación y vivir en el presente para mejorar la salud mental.'
   }
 ];
 

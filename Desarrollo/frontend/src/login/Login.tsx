@@ -10,7 +10,7 @@ function Login() {
     event.preventDefault();
     // NOTE: This is a placeholder for actual authentication logic.
     // In a real application, you would verify credentials against a backend.
-    if (username === 'student' && password === 'password') {
+    if (username === 'juanda' && password === 'password') {
       // Simulate student login - redirigir a la página de estudiante
       navigate('/estudiante');
     } else if (username === 'admin' && password === 'password') {

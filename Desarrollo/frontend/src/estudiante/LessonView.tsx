@@ -96,7 +96,7 @@ const LessonView: React.FC = () => {
     // Guardar el progreso
     saveProgress(lessonId, currentQuestionIndex + 1, newAnswers);
     
-    if (currentQuestionIndex < 3) { // 0-3 = primeras 4 preguntas
+    if (currentQuestionIndex < 2) { // 0-2 = primeras 3 preguntas
       // Avanzar a la siguiente pregunta
       const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
@@ -118,7 +118,7 @@ const LessonView: React.FC = () => {
         setIsLoading(false); // Desactivar carga independientemente del resultado
         setCurrentAnswer(''); // Limpiar el input
       }
-    } else if (currentQuestionIndex === 3) { // Cuando estamos en la pregunta 4 (índice 3)
+    } else if (currentQuestionIndex === 2) { // Cuando estamos en la pregunta 3 (índice 2)
       // Avanzar a la última "pregunta" (recomendación final)
       const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
@@ -142,7 +142,7 @@ const LessonView: React.FC = () => {
         setIsLoading(false);
       }
     } else {
-      // Lección terminada (5ta pregunta respondida - que era la recomendación final)
+      // Lección terminada (la recomendación final después de la última pregunta)
       setIsCompleted(true);
     }
   };
@@ -180,14 +180,14 @@ const LessonView: React.FC = () => {
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-2xl font-semibold mb-2 text-blue-300">{currentLesson.name}</h2>
         <p className="text-sm text-gray-400 mb-6">
-          {currentQuestionIndex < 4 ? `Pregunta ${currentQuestionIndex + 1} de 4` : 'Recomendación Final'}
+          {currentQuestionIndex < 3 ? `Pregunta ${currentQuestionIndex + 1} de 3` : 'Recomendación Final'}
         </p>
 
         {isLoading ? (
           <div className="flex flex-col items-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
             <p className="text-gray-400">
-              {currentQuestionIndex < 4 ? 'Generando siguiente pregunta...' : 'Preparando recomendación final...'}
+              {currentQuestionIndex < 3 ? 'Generando siguiente pregunta...' : 'Preparando recomendación final...'}
             </p>
           </div>
         ) : (
@@ -205,7 +205,7 @@ const LessonView: React.FC = () => {
               </div>
             </div>
 
-            {currentQuestionIndex < 4 ? (
+            {currentQuestionIndex < 3 ? (
               <form onSubmit={handleAnswerSubmit} className="space-y-4">
                 <textarea
                   className="w-full p-4 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -219,7 +219,7 @@ const LessonView: React.FC = () => {
                   className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors shadow-md"
                   type="submit"
                 >
-                  {currentQuestionIndex === 3 ? 'Finalizar y recibir recomendación' : 'Siguiente'}
+                  {currentQuestionIndex === 2 ? 'Finalizar y recibir recomendación' : 'Siguiente'}
                 </button>
               </form>
             ) : (
