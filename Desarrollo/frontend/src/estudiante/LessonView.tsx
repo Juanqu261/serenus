@@ -7,7 +7,8 @@ import {
   earnAchievement, 
   saveProgress, 
   getLessonProgress,
-  getNextQuestion
+  getNextQuestion,
+  resetIAMemory
 } from './lessonData';
 
 // Definir las imágenes de emociones disponibles
@@ -59,7 +60,7 @@ const LessonView: React.FC = () => {
           setIsLoading(true); // Activar carga
           const lastAnswer = savedProgress.answers[savedProgress.answers.length - 1];
           
-          getNextQuestion(lessonId, savedProgress.questionIndex, lastAnswer)
+          getNextQuestion(lessonId, savedProgress.questionIndex, lastAnswer, false)
             .then(nextQuestion => {
               setCurrentQuestion(nextQuestion);
               setCurrentEmotionImage(getRandomEmotionImage()); // Usar emoción aleatoria para preguntas siguientes
@@ -73,8 +74,11 @@ const LessonView: React.FC = () => {
             });
         }
       } else {
-        // Si es una nueva sesión, comenzar con la mascota sonriendo
+        // Si es una nueva sesión, comenzar con la mascota sonriendo y resetear memoria
         setCurrentEmotionImage('/Alegre.png');
+        // Resetear la memoria de la IA al iniciar una nueva lección
+        console.log('Iniciando nueva lección, reseteando memoria de IA...');
+        resetIAMemory().catch(error => console.error('Error al resetear memoria de IA:', error));
       }
     } else {
       // Si no existe la lección, redirigir
@@ -102,7 +106,8 @@ const LessonView: React.FC = () => {
       
       try {
         // Generar la siguiente pregunta basada en la respuesta actual
-        const nextQuestion = await getNextQuestion(lessonId, nextIndex, currentAnswer);
+        // Solo usamos resetMemory=true para la primera pregunta de una nueva sesión
+        const nextQuestion = await getNextQuestion(lessonId, nextIndex, currentAnswer, false);
         setCurrentQuestion(nextQuestion);
         // Para preguntas siguientes, usar emociones aleatorias
         setCurrentEmotionImage(getRandomEmotionImage());

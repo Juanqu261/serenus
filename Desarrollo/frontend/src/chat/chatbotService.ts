@@ -1,11 +1,15 @@
-export async function sendMessageToBackend(message: string): Promise<string> {
+/**
+ * Resetea la memoria de la IA
+ * @returns Booleano indicando si el reseteo fue exitoso
+ */
+export async function resetIAMemory(): Promise<boolean> {
   try {
-    const response = await fetch('http://localhost:8000/api/chat', { // Assuming the endpoint is /api/chat
+    const response = await fetch('http://127.0.0.1:8000/api/ia/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ reset_memory: true }),
     });
 
     if (!response.ok) {
@@ -13,21 +17,27 @@ export async function sendMessageToBackend(message: string): Promise<string> {
     }
 
     const data = await response.json();
-    // Assuming the backend response has a 'reply' field with the bot's message
-    return data.reply || 'No reply received.'; 
+    return data.success || false;
   } catch (error) {
-    console.error('Error sending message to backend:', error);
-    return 'Error communicating with the chatbot service.';
+    console.error('Error al resetear la memoria de la IA:', error);
+    return false;
   }
 }
 
 /**
  * Envía un mensaje a la API de IA y devuelve la respuesta
  * @param message El mensaje a enviar a la IA
+ * @param resetMemory Si es true, resetea la memoria de la IA antes de enviar el mensaje
  * @returns La respuesta procesada de la IA
  */
-export async function sendMessageToIA(message: string): Promise<string> {
+export async function sendMessageToIA(message: string, resetMemory: boolean = false): Promise<string> {
   try {
+    // Si se solicita resetear la memoria, hacerlo antes de enviar el mensaje
+    if (resetMemory) {
+      console.log('Reseteando memoria de IA...');
+      await resetIAMemory();
+    }
+
     const response = await fetch('http://127.0.0.1:8000/api/ia/', {
       method: 'POST',
       headers: {
