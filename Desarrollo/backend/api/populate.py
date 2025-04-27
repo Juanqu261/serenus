@@ -96,14 +96,6 @@ def populate_database():
         horas_de_dedicacion=18  # Estudiante a punto de graduarse
     )
 
-    # Crear recomendaciones
-    recomendacion1 = Recomendaciones.objects.create(
-        descripcion="Practica ejercicios de respiración para reducir el estrés."
-    )
-    recomendacion2 = Recomendaciones.objects.create(
-        descripcion="Organiza tu tiempo para mejorar tu rendimiento académico."
-    )
-
     # Crear recomendaciones basadas en niveles de estrés
     recomendacion_nivel_bajo = Recomendaciones.objects.create(
         descripcion="Mantén tus buenos hábitos. Continúa usando herramientas como Google Calendar para organizar tus tareas y practica técnicas breves de respiración entre clases."
@@ -130,13 +122,13 @@ def populate_database():
         estudiante_id=estudiante1,
         nivel_de_estres=7.5,
         escala_de_accion=8.0,
-        recomendaciones_id=recomendacion1
+        recomendaciones_id=recomendacion_nivel_alto
     )
     Estres.objects.create(
         estudiante_id=estudiante2,
         nivel_de_estres=5.0,
         escala_de_accion=6.0,
-        recomendaciones_id=recomendacion2
+        recomendaciones_id=recomendacion_nivel_medio
     )
     Estres.objects.create(
         estudiante_id=estudiante3,
