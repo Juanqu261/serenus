@@ -14,10 +14,6 @@ from django.db import transaction
 
 @transaction.atomic
 def populate_database():
-    # Crear roles
-    rol_admin = Rol.objects.create(nombre="Admin")
-    rol_estudiante = Rol.objects.create(nombre="Estudiante")
-
     # Crear estudiantes
     estudiante1 = Estudiante.objects.create(
         cedula=123456,
@@ -96,14 +92,6 @@ def populate_database():
         horas_de_dedicacion=18  # Estudiante a punto de graduarse
     )
 
-    # Crear recomendaciones
-    recomendacion1 = Recomendaciones.objects.create(
-        descripcion="Practica ejercicios de respiración para reducir el estrés."
-    )
-    recomendacion2 = Recomendaciones.objects.create(
-        descripcion="Organiza tu tiempo para mejorar tu rendimiento académico."
-    )
-
     # Crear recomendaciones basadas en niveles de estrés
     recomendacion_nivel_bajo = Recomendaciones.objects.create(
         descripcion="Mantén tus buenos hábitos. Continúa usando herramientas como Google Calendar para organizar tus tareas y practica técnicas breves de respiración entre clases."
@@ -130,13 +118,13 @@ def populate_database():
         estudiante_id=estudiante1,
         nivel_de_estres=7.5,
         escala_de_accion=8.0,
-        recomendaciones_id=recomendacion1
+        recomendaciones_id=recomendacion_nivel_alto
     )
     Estres.objects.create(
         estudiante_id=estudiante2,
         nivel_de_estres=5.0,
         escala_de_accion=6.0,
-        recomendaciones_id=recomendacion2
+        recomendaciones_id=recomendacion_nivel_medio
     )
     Estres.objects.create(
         estudiante_id=estudiante3,
@@ -178,15 +166,13 @@ def populate_database():
         estudiante_id=estudiante1,
         semestre="2023-1",
         creditos=20,
-        asistencia=90.0,
         numero_asignaturas=5,
         horas_dedicadas=25
     )
     carga_trabajo.objects.create(
         estudiante_id=estudiante2,
         semestre="2023-1",
-        creditos=15,
-        asistencia=85.0,
+        creditos=16,
         numero_asignaturas=4,
         horas_dedicadas=18
     )
@@ -194,7 +180,6 @@ def populate_database():
         estudiante_id=estudiante3,
         semestre="2023-1",
         creditos=16,
-        asistencia=95.0,
         numero_asignaturas=4,
         horas_dedicadas=10
     )
@@ -203,7 +188,6 @@ def populate_database():
         estudiante_id=estudiante4,
         semestre="2023-1",
         creditos=22,
-        asistencia=70.0,
         numero_asignaturas=6,
         horas_dedicadas=30
     )
@@ -212,7 +196,6 @@ def populate_database():
         estudiante_id=estudiante5,
         semestre="2023-1",
         creditos=12,
-        asistencia=60.0,
         numero_asignaturas=3,
         horas_dedicadas=12
     )
@@ -221,7 +204,6 @@ def populate_database():
         estudiante_id=estudiante6,
         semestre="2023-1",
         creditos=24,
-        asistencia=98.0,
         numero_asignaturas=7,
         horas_dedicadas=40
     )
@@ -230,7 +212,6 @@ def populate_database():
         estudiante_id=estudiante7,
         semestre="2023-1",
         creditos=10,
-        asistencia=85.0,
         numero_asignaturas=3,
         horas_dedicadas=18
     )
