@@ -1,4 +1,4 @@
-# 🎓 Serenito: Plataforma de Bienestar Emocional Universitario
+# 🎓 Serenus: Plataforma de Bienestar Emocional Universitario
 
 ## 📋 Resumen Ejecutivo
 
