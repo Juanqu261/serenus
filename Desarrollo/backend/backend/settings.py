@@ -64,15 +64,12 @@ CORS_ALLOWED_ORIGINS = [
 # Modelo de usuario personalizado
 AUTH_USER_MODEL = 'api.Persona'
 
-# Configuracion de REST Framework para autenticacion
+# Configuración de REST Framework para desarrollo (sin autenticación ni permisos)
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASSES': [],  # Deshabilitar autenticación
+    'DEFAULT_PERMISSION_CLASSES': [  # Permitir acceso sin restricciones
+        'rest_framework.permissions.AllowAny',
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ]
 }
 
 ROOT_URLCONF = 'backend.urls'
