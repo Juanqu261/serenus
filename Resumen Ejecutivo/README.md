@@ -1,27 +1,30 @@
-# 📑 Resumen Ejecutivo – OmegaLab 2025
+# 🎓 Serenito: Plataforma de Bienestar Emocional Universitario
 
-## ¡Bienvenidos a la carpeta de Resumen Ejecutivo!
+## 📋 Resumen Ejecutivo
 
-En esta sección se debe subir **el resumen general del proyecto**, que debe sintetizar los aspectos más importantes y relevantes del trabajo realizado durante el reto OmegaLab 2025.
+El bienestar emocional de los estudiantes universitarios se ve gravemente afectado por altos niveles de estrés académico, lo que impacta negativamente su motivación y rendimiento. A pesar de la importancia de este tema, las universidades suelen carecer de mecanismos oportunos y personalizados para identificar y atender las primeras señales de estrés o ansiedad, aumentando el riesgo de bajo desempeño académico y abandono estudiantil.
 
----
-- El **documento debe contar con 5 hojas**:
-  - **4 hojas** deben ser para cada una de las disciplinas: Administración, Desarrollo, Mercadeo y Diseño.
-  - **Diseño** es el único rol que debe contar con **2 hojas**:
-    - La primera hoja debe ser igual a demás roles.
-    - La segunda hoja debe ser exclusiva para **imágenes visuales**, como prototipos, maquetas, wireframes, logotipos, y otros recursos visuales.
+## 🎯 Objetivo
 
-## 📋 ¿Qué tipo de contenidos pueden ir aquí?
-  - Un resumen claro y conciso del proyecto: objetivos, alcance y propósito.
-  - Descripción del impacto y resultados esperados.
-  - Principales logros y conclusiones del proyecto.
-  - Resumen de la metodología utilizada y los avances alcanzados.
-  - Cualquier otro contenido relevante que el equipo considere importante mostrar a los jueces.
+Diseñar una solución digital innovadora basada en Inteligencia Artificial que identifique, prevenga y reduzca el estrés académico, fortaleciendo el bienestar emocional, la motivación y el rendimiento de los estudiantes universitarios.
 
-> ℹ️ **Nota:** Este archivo debe contener lo que **ustedes consideran relevante** para presentar y destacar frente a los jueces, ya que será lo que se utilizará para la evaluación final del proyecto.
+## 💡 Propuesta de Solución
 
----
+Desarrollar una plataforma digital que utilice técnicas de IA como:
 
-> Tienes solo 5 minutos para enamorar, emocionar y convencer. Elige sabiamente qué mostrar. Deja que tu pasión y tu estrategia hablen más fuerte que las palabras.
+- Análisis de sentimientos,
+- Predicción de riesgo de sufrir estrés, ansiedad y desmotivación,
+- Sistemas de recomendación para hábitos saludables.
 
-¡Éxito en la presentación de su proyecto! 🚀
+La solución permitirá:
+
+- Detectar señales tempranas de estrés a través del análisis de datos académicos y del comportamiento estudiantil, obtenidos mediante conversaciones entre nuestro chatbot **Serenito** y el estudiante.
+- Ofrecer acompañamiento personalizado mediante recomendaciones de organización personal y acceso a recursos de autocuidado emocional, adaptándose a diferentes estilos de aprendizaje.
+- Permitir al personal de bienestar universitario monitorear el nivel de estrés de los estudiantes, acceder a su información básica para entender posibles causas, y recibir alertas cuando un estudiante presente un nivel de riesgo alto para tomar medidas rápidas y efectivas.
+
+## 🚀 Valor Diferencial
+
+- **Detección temprana basada en IA**: Utilizando datos académicos de fácil acceso para intervenir antes de que el estrés afecte gravemente el bienestar de los estudiantes.
+- **Acompañamiento personalizado**: Adaptado al perfil emocional y académico de cada estudiante.
+- **Fomento de hábitos saludables**: Promoviendo la organización personal y la creación de rutinas de autocuidado de manera automatizada.
+- **Escalabilidad y ética**: Considerando las limitaciones de infraestructura de las universidades y asegurando la privacidad de los datos estudiantiles, en especial de las conversaciones con el chatbot.
