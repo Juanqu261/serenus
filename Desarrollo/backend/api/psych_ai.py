@@ -12,6 +12,7 @@ from dotenv import load_dotenv # type: ignore
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
+print("GOOGLE_API_KEY:", os.getenv("GOOGLE_API_KEY"))
 
 class PsychologyAI:
     """

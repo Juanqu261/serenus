@@ -200,7 +200,7 @@ const LessonView: React.FC = () => {
                 <img
                   src={currentEmotionImage}
                   alt="Mascota"
-                  className="w-24 h-24 rounded-full shadow-md"
+                  className="w-24 h-24"
                 />
               </div>
             </div>
