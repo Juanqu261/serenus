@@ -136,28 +136,28 @@ def populate_database():
     Estres.objects.create(
         estudiante_id=estudiante4,
         nivel_de_estres=5.5,  # Nivel medio
-        escala_de_accion=2.0,
+        escala_de_accion=5.0,
         recomendaciones_id=recomendacion_nivel_medio
     )
     
     Estres.objects.create(
         estudiante_id=estudiante5,
         nivel_de_estres=7.8,  # Nivel alto
-        escala_de_accion=3.0,
+        escala_de_accion=7.0,
         recomendaciones_id=recomendacion_nivel_alto
     )
     
     Estres.objects.create(
         estudiante_id=estudiante6,
         nivel_de_estres=9.5,  # Nivel muy alto
-        escala_de_accion=4.0,
+        escala_de_accion=10.0,
         recomendaciones_id=recomendacion_nivel_muy_alto
     )
     
     Estres.objects.create(
         estudiante_id=estudiante7,
         nivel_de_estres=6.2,  # Nivel medio-alto
-        escala_de_accion=2.5,
+        escala_de_accion=6.5,
         recomendaciones_id=recomendacion_proactiva
     )
 
