@@ -16,13 +16,13 @@
 
 ### **Backend**  
 - **Django** (Python) + **Django REST Framework** (APIs).  
-- Base de datos: Caso de uso sqlite3 (adaptable a cualquier motor DBMS).
+- Base de datos: Caso de uso SQLite3 (adaptable a cualquier motor DBMS).
 - Integración con **Google Gemini API** para análisis de texto y recomendaciones personalizadas.  
 
 ### **Frontend**  
 - **React** + **Vite** (rendimiento optimizado).  
 - Librerías clave:
-  - `react-router` para visualización de métricas de estrés.  
+  - `react-router` direccionamiento dentro de la app.  
   - `TailwindCSS` para componentes estilizados.  
 
 ### **IA y Servicios Externos**  
