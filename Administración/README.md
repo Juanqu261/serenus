@@ -3,9 +3,9 @@
 ## Estructura y división por deadlines
 
 ### Para las 11PM
-**Juan Esteban:** Definir Acción
-**Juan Felipe:** Definir Detección
-**Abraham:** Base de Datos y Endpoints
+**Juan Esteban:** Definir Acción,
+**Juan Felipe:** Definir Detección,
+**Abraham:** Base de Datos y Endpoints,
 **Alejandro:** Diseños Responsive
 
 ### Para la 1AM
@@ -16,7 +16,7 @@ Conciliación entre detección y acción
 **Juan Esteban:** Marketing y Pitch
 
 ### Para las 5AM
-**Abraham y Alejandro:** Servicios
+**Abraham y Alejandro:** Servicios,
 **Juan Felipe y Juan Esteban:** Frontend
 
 ### Descanso de 5AM a 9AM
