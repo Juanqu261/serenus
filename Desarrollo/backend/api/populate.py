@@ -40,6 +40,62 @@ def populate_database():
         horas_de_dedicacion=15
     )
 
+    # Crear más estudiantes para casos de prueba
+    estudiante3 = Estudiante.objects.create(
+        cedula=789012,
+        nombres="Carlos",
+        apellidos="Rodríguez",
+        fecha_de_nacimiento="2001-03-12",
+        promedio_actual=4.8,
+        promedio_acumulado=4.7,
+        avance=90.0,
+        horas_de_dedicacion=10  # Pocas horas pero alto rendimiento
+    )
+    
+    estudiante4 = Estudiante.objects.create(
+        cedula=345678,
+        nombres="Ana",
+        apellidos="Martínez",
+        fecha_de_nacimiento="2000-07-23",
+        promedio_actual=3.2,
+        promedio_acumulado=3.5,
+        avance=45.0,
+        horas_de_dedicacion=30  # Muchas horas pero rendimiento moderado
+    )
+    
+    estudiante5 = Estudiante.objects.create(
+        cedula=901234,
+        nombres="Pablo",
+        apellidos="Sánchez",
+        fecha_de_nacimiento="1998-11-05",
+        promedio_actual=2.9,
+        promedio_acumulado=3.1,
+        avance=75.0,
+        horas_de_dedicacion=12  # Rezagado académicamente
+    )
+    
+    estudiante6 = Estudiante.objects.create(
+        cedula=567890,
+        nombres="Laura",
+        apellidos="Torres",
+        fecha_de_nacimiento="2002-09-30",
+        promedio_actual=4.1,
+        promedio_acumulado=3.7,
+        avance=25.0,
+        horas_de_dedicacion=40  # Estudiante de primeros semestres con alta dedicación
+    )
+    
+    estudiante7 = Estudiante.objects.create(
+        cedula=234567,
+        nombres="Miguel",
+        apellidos="López",
+        fecha_de_nacimiento="1999-04-18",
+        promedio_actual=3.6,
+        promedio_acumulado=3.6,
+        avance=95.0,
+        horas_de_dedicacion=18  # Estudiante a punto de graduarse
+    )
+
     # Crear recomendaciones
     recomendacion1 = Recomendaciones.objects.create(
         descripcion="Practica ejercicios de respiración para reducir el estrés."
