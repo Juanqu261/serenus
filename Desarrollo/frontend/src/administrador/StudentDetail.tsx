@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-// Interfaz para los datos del estudiante que coincide con la API
+// Interfaz para los datos del estudiante que coincide con la API actualizada
 interface Estudiante {
   cedula: number;
   nombres: string;
@@ -13,6 +13,15 @@ interface Estudiante {
   horas_de_dedicacion: number;
 }
 
+interface CargaTrabajo {
+  id: number;
+  semestre: string;
+  creditos: number;
+  numero_asignaturas: number;
+  horas_dedicadas: number;
+  estudiante_id: number;
+}
+
 interface EstudianteConEstres {
   estudiante: Estudiante;
   nivel_de_estres: number;
@@ -20,6 +29,7 @@ interface EstudianteConEstres {
   recomendaciones: {
     descripcion: string;
   };
+  carga_trabajo: CargaTrabajo[];
 }
 
 // Componente para la recta numérica
@@ -59,7 +69,6 @@ const NumberLine: React.FC<NumberLineProps> = ({ value, min, max, label, unit = 
           className={`absolute h-full rounded-full bg-${color}-500 flex items-center justify-end pr-1`}
           style={{ width: `${percentage}%`, minWidth: '1.5rem' }}
         >
-          {/* <div className={`h-6 w-6 absolute right-0 transform translate-x-1/2 -translate-y-1 bg-${color}-600 rounded-full border-2 border-white`}></div> */}
         </div>
         
         {/* Valores min-max */}
@@ -117,9 +126,6 @@ const Thermometer: React.FC<ThermometerProps> = ({ stressLevel }) => {
             ></div>
           ))}
         </div>
-        
-        {/* Bulbo del termómetro */}
-        {/* <div className={`absolute bottom-0 left-0 w-16 h-16 rounded-full ${getColor()} border border-gray-300`}></div> */}
       </div>
       
       <div className="text-center">
@@ -154,6 +160,43 @@ const Recommendation: React.FC<RecommendationProps> = ({ text }) => {
   );
 };
 
+// Componente para mostrar la carga de trabajo académico
+interface WorkloadCardProps {
+  cargaTrabajo: CargaTrabajo;
+}
+
+const WorkloadCard: React.FC<WorkloadCardProps> = ({ cargaTrabajo }) => {
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mb-4">
+      <h3 className="text-lg font-semibold text-gray-800 mb-2">Semestre {cargaTrabajo.semestre}</h3>
+      
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-500">Créditos</span>
+          <span className="text-xl font-bold text-blue-600">{cargaTrabajo.creditos}</span>
+        </div>
+        
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-500">Asignaturas</span>
+          <span className="text-xl font-bold text-purple-600">{cargaTrabajo.numero_asignaturas}</span>
+        </div>
+        
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-500">Horas dedicadas</span>
+          <span className="text-xl font-bold text-orange-600">{cargaTrabajo.horas_dedicadas} h</span>
+        </div>
+        
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-500">H/Crédito</span>
+          <span className="text-xl font-bold text-emerald-600">
+            {(cargaTrabajo.horas_dedicadas / cargaTrabajo.creditos).toFixed(1)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StudentDetail: React.FC = () => {
   const { studentId } = useParams<{ studentId?: string }>();
   const navigate = useNavigate();
@@ -167,7 +210,7 @@ const StudentDetail: React.FC = () => {
       
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:8000/api/estres-estudiantes/');
+        const response = await fetch('http://localhost:8000/api/estres-estudiantes-carga-trabajo/');
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -214,11 +257,8 @@ const StudentDetail: React.FC = () => {
     );
   }
 
-  const { estudiante, nivel_de_estres, recomendaciones } = estudianteData;
+  const { estudiante, nivel_de_estres, recomendaciones, carga_trabajo } = estudianteData;
   const nombreCompleto = `${estudiante.nombres} ${estudiante.apellidos}`;
-
-  // Calcular créditos estimados (asumiendo 48 horas semanales máximas de dedicación) 
-  const creditosEstimados = Math.ceil(estudiante.horas_de_dedicacion / 3);
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -237,10 +277,10 @@ const StudentDetail: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Columna izquierda - Datos académicos */}
-          <div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Columna izquierda - Datos académicos */}
+        <div className="lg:col-span-2">
+          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 className="text-xl font-semibold mb-6 text-gray-800">Datos Académicos</h2>
             
             <NumberLine 
@@ -277,12 +317,53 @@ const StudentDetail: React.FC = () => {
               color="red"
             />
           </div>
-          
-          {/* Columna derecha - Termómetro de estrés */}
-          <div className="flex flex-col items-center">
-            <Thermometer stressLevel={nivel_de_estres} />
+
+          {/* Sección de Carga Académica */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Carga Académica</h2>
             
-            {/* Recomendaciones */}
+            {carga_trabajo && carga_trabajo.length > 0 ? (
+              carga_trabajo.map(carga => (
+                <WorkloadCard key={carga.id} cargaTrabajo={carga} />
+              ))
+            ) : (
+              <p className="text-gray-500 italic">No hay información de carga académica disponible</p>
+            )}
+          </div>
+        </div>
+        
+        {/* Columna derecha - Termómetro de estrés y recomendaciones */}
+        <div>
+          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            {/* Escala de acción */}
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">Datos de Estrés</h2>
+            
+            <div className="mb-6">
+              <h3 className="text-md font-medium text-gray-700 mb-2">Escala de acción</h3>
+              <div className="relative h-4 bg-gray-200 rounded-full mb-2">
+                <div 
+                  className="absolute h-full rounded-full bg-indigo-500"
+                  style={{ width: `${(estudianteData.escala_de_accion / 10) * 100}%` }}
+                ></div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>0 - Baja</span>
+                <span>5 - Media</span>
+                <span>10 - Alta</span>
+              </div>
+              <p className="mt-2 text-sm text-gray-600">
+                Nivel de urgencia: <span className="font-semibold">{estudianteData.escala_de_accion.toFixed(1)}/10</span>
+              </p>
+            </div>
+            
+            <div className="flex justify-center">
+              <Thermometer stressLevel={nivel_de_estres} />
+            </div>
+          </div>
+          
+          {/* Recomendaciones */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Plan de Acción</h2>
             <Recommendation text={recomendaciones.descripcion} />
           </div>
         </div>

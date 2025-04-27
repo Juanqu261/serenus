@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Definir la interfaz para estudiantes que coincide con la API
+// Definir la interfaz para estudiantes que coincide con la API actualizada
 interface Estudiante {
   cedula: number;
   nombres: string;
@@ -13,6 +13,15 @@ interface Estudiante {
   horas_de_dedicacion: number;
 }
 
+interface CargaTrabajo {
+  id: number;
+  semestre: string;
+  creditos: number;
+  numero_asignaturas: number;
+  horas_dedicadas: number;
+  estudiante_id: number;
+}
+
 interface EstudianteConEstres {
   estudiante: Estudiante;
   nivel_de_estres: number;
@@ -20,6 +29,7 @@ interface EstudianteConEstres {
   recomendaciones: {
     descripcion: string;
   };
+  carga_trabajo: CargaTrabajo[];
 }
 
 const StudentList: React.FC = () => {
@@ -35,7 +45,7 @@ const StudentList: React.FC = () => {
     const fetchEstudiantes = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:8000/api/estres-estudiantes/');
+        const response = await fetch('http://localhost:8000/api/estres-estudiantes-carga-trabajo/');
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -125,6 +135,9 @@ const StudentList: React.FC = () => {
                     {sortOrder === 'asc' ? '↑' : '↓'}
                   </span>
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Créditos
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -159,11 +172,16 @@ const StudentList: React.FC = () => {
                         </div>
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {item.carga_trabajo && item.carga_trabajo.length > 0 ? 
+                        item.carga_trabajo[0].creditos : 
+                        'N/A'}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={2} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={3} className="px-6 py-4 text-center text-sm text-gray-500">
                     No se encontraron estudiantes
                   </td>
                 </tr>
