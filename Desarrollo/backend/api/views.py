@@ -1,7 +1,7 @@
 from rest_framework import viewsets  # type: ignore
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Rol, Persona, Estudiante, Estres, carga_trabajo
+from .models import Estres
 from .serializers import (
     RolSerializer, PersonaSerializer, EstudianteSerializer, EstresSerializer,
     EstresEstudianteCargaTrabajoSerializer
@@ -30,13 +30,13 @@ class EstresViewSet(viewsets.ModelViewSet):
 
 # Vista para el primer endpoint: Estres y Estudiante
 class EstresEstudianteViewSet(viewsets.ModelViewSet):
-    queryset = Estres.objects.select_related('estudiante_id').all()
-    serializer_class = EstresSerializer
-    permission_classes = []  # Eliminar restricciones de permisos
+    queryset = Estres.objects.select_related('estudiante_id').all()  # Optimiza la consulta con select_related
+    serializer_class = EstresEstudianteSerializer
+    permission_classes = []  # Sin restricciones de permisos
 
 # Vista para el segundo endpoint: Estres, Estudiante y carga_trabajo
 class EstresEstudianteCargaTrabajoViewSet(viewsets.ModelViewSet):
-    queryset = Estres.objects.prefetch_related('estudiante_id__carga_trabajo_set').all()
+    queryset = Estres.objects.prefetch_related('estudiante_id__carga_trabajo_set').all()  # Optimiza con prefetch_related
     serializer_class = EstresEstudianteCargaTrabajoSerializer
     permission_classes = []  # Eliminar restricciones de permisos
 

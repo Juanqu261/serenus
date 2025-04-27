@@ -1,20 +1,29 @@
 # 🗂️ Administración – OmegaLab 2025
 
-## ¡Bienvenidos a la carpeta de Administración!
+## Estructura y división por deadlines
 
-Aquí se debe subir **todo el material y documentación** que el área de Administración genere a lo largo del reto OmegaLab 2025.
+### Para las 11PM
+**Juan Esteban:** Definir Acción,
+**Juan Felipe:** Definir Detección,
+**Abraham:** Base de Datos y Endpoints,
+**Alejandro:** Diseños Responsive
 
----
+### Para la 1AM
+**Juan Esteban y Juan Felipe:**
+Conciliación entre detección y acción
 
-## 📋 ¿Qué tipo de contenidos pueden ir aquí?
+### Para las 3AM
+**Juan Esteban:** Marketing y Pitch
 
-- Planes de organización y gestión del equipo
-- Avances o reportes administrativos
-- Cronogramas, planificaciones, asignaciones de tareas
-- Cualquier otro documento relacionado con la coordinación y administración del proyecto
+### Para las 5AM
+**Abraham y Alejandro:** Servicios,
+**Juan Felipe y Juan Esteban:** Frontend
 
-> ℹ️ **Nota:** No es necesario seguir un formato exacto, pero es importante que los archivos estén claros, bien nombrados y actualizados para que los jueces puedan entender el trabajo realizado.
+### Descanso de 5AM a 9AM
+**Nadie trabaja**
 
----
+### Para las 12PM
+**Todos:** Integración
 
-¡Buena organización y mucho éxito en el reto! 🚀
+### Para las 3PM
+**Todos:** Reprocesos y Preparación
