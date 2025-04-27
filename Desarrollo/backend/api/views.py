@@ -1,32 +1,13 @@
 from rest_framework import viewsets  # type: ignore
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from rest_framework.decorators import api_view # type: ignore
+from rest_framework.response import Response # type: ignore
 from .models import Estres
 from .serializers import (
-    RolSerializer, PersonaSerializer, EstudianteSerializer, EstresSerializer,
+    EstresEstudianteSerializer,
     EstresEstudianteCargaTrabajoSerializer
 )
 from .psych_ai import psychology_ai  # Importando nuestra IA de psicología
 
-class RolViewSet(viewsets.ModelViewSet):
-    queryset = Rol.objects.all()
-    serializer_class = RolSerializer
-    permission_classes = []  # Eliminar restricciones de permisos
-
-class PersonaViewSet(viewsets.ModelViewSet):
-    queryset = Persona.objects.all()
-    serializer_class = PersonaSerializer
-    permission_classes = []  # Eliminar restricciones de permisos
-
-class EstudianteViewSet(viewsets.ModelViewSet):
-    queryset = Estudiante.objects.all()
-    serializer_class = EstudianteSerializer
-    permission_classes = []  # Eliminar restricciones de permisos
-
-class EstresViewSet(viewsets.ModelViewSet):
-    queryset = Estres.objects.all()
-    serializer_class = EstresSerializer
-    permission_classes = []  # Eliminar restricciones de permisos
 
 # Vista para el primer endpoint: Estres y Estudiante
 class EstresEstudianteViewSet(viewsets.ModelViewSet):
