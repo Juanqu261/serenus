@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* Enable dark mode */
+@layer base {
+  html {
+    @apply dark;
+  }
+}
