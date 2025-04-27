@@ -96,7 +96,7 @@ const LessonView: React.FC = () => {
     // Guardar el progreso
     saveProgress(lessonId, currentQuestionIndex + 1, newAnswers);
     
-    if (currentQuestionIndex < 4) { // 0-4 = 5 preguntas
+    if (currentQuestionIndex < 3) { // 0-3 = primeras 4 preguntas
       // Avanzar a la siguiente pregunta
       const nextIndex = currentQuestionIndex + 1;
       setCurrentQuestionIndex(nextIndex);
@@ -106,7 +106,6 @@ const LessonView: React.FC = () => {
       
       try {
         // Generar la siguiente pregunta basada en la respuesta actual
-        // Solo usamos resetMemory=true para la primera pregunta de una nueva sesión
         const nextQuestion = await getNextQuestion(lessonId, nextIndex, currentAnswer, false);
         setCurrentQuestion(nextQuestion);
         // Para preguntas siguientes, usar emociones aleatorias
@@ -119,20 +118,32 @@ const LessonView: React.FC = () => {
         setIsLoading(false); // Desactivar carga independientemente del resultado
         setCurrentAnswer(''); // Limpiar el input
       }
+    } else if (currentQuestionIndex === 3) { // Cuando estamos en la pregunta 4 (índice 3)
+      // Avanzar a la última "pregunta" (recomendación final)
+      const nextIndex = currentQuestionIndex + 1;
+      setCurrentQuestionIndex(nextIndex);
+      
+      // Activar estado de carga
+      setIsLoading(true);
+      
+      try {
+        // Generar una recomendación final basada en todas las respuestas anteriores
+        const finalRecommendation = await getNextQuestion(lessonId, nextIndex, currentAnswer, false, true); // Añadir parámetro para indicar recomendación final
+        setCurrentQuestion(finalRecommendation);
+        // Usar una imagen positiva para la recomendación final
+        setCurrentEmotionImage('/Confiado.png');
+        // Desactivar el campo de respuesta ya que es la recomendación final
+        setCurrentAnswer('');
+      } catch (error) {
+        console.error('Error al obtener la recomendación final:', error);
+        setCurrentQuestion('Basándome en nuestra conversación, te recomiendo tomar un tiempo para reflexionar sobre tus emociones y practicar técnicas de autocuidado. Recuerda que cuidar de tu bienestar mental es tan importante como cuidar tu salud física.');
+        setCurrentEmotionImage('/Confiado.png');
+      } finally {
+        setIsLoading(false);
+      }
     } else {
-      // Lección terminada (5 preguntas respondidas)
+      // Lección terminada (5ta pregunta respondida - que era la recomendación final)
       setIsCompleted(true);
-      
-      // Desbloquear siguiente lección (si existe)
-      const currentIndex = lessons.findIndex(l => l.id === lessonId);
-      if (currentIndex !== -1 && currentIndex + 1 < lessons.length) {
-        unlockLesson(lessons[currentIndex + 1].id);
-      }
-      
-      // Otorgar logro
-      if (currentLesson.achievement) {
-        earnAchievement(currentLesson.achievement);
-      }
     }
   };
 
@@ -168,12 +179,16 @@ const LessonView: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4 text-white">
       <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-2xl font-semibold mb-2 text-blue-300">{currentLesson.name}</h2>
-        <p className="text-sm text-gray-400 mb-6">Pregunta {currentQuestionIndex + 1} de 5</p>
+        <p className="text-sm text-gray-400 mb-6">
+          {currentQuestionIndex < 4 ? `Pregunta ${currentQuestionIndex + 1} de 4` : 'Recomendación Final'}
+        </p>
 
         {isLoading ? (
           <div className="flex flex-col items-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-            <p className="text-gray-400">Generando siguiente pregunta...</p>
+            <p className="text-gray-400">
+              {currentQuestionIndex < 4 ? 'Generando siguiente pregunta...' : 'Preparando recomendación final...'}
+            </p>
           </div>
         ) : (
           <>
@@ -190,22 +205,46 @@ const LessonView: React.FC = () => {
               </div>
             </div>
 
-            <form onSubmit={handleAnswerSubmit} className="space-y-4">
-              <textarea
-                className="w-full p-4 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={4}
-                placeholder="Escribe tu respuesta aquí..."
-                value={currentAnswer}
-                onChange={(e) => setCurrentAnswer(e.target.value)}
-                required
-              />
+            {currentQuestionIndex < 4 ? (
+              <form onSubmit={handleAnswerSubmit} className="space-y-4">
+                <textarea
+                  className="w-full p-4 border border-gray-600 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={4}
+                  placeholder="Escribe tu respuesta aquí..."
+                  value={currentAnswer}
+                  onChange={(e) => setCurrentAnswer(e.target.value)}
+                  required
+                />
+                <button
+                  className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors shadow-md"
+                  type="submit"
+                >
+                  {currentQuestionIndex === 3 ? 'Finalizar y recibir recomendación' : 'Siguiente'}
+                </button>
+              </form>
+            ) : (
               <button
-                className="w-full bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors shadow-md"
-                type="submit"
+                onClick={() => {
+                  // Desbloquear siguiente lección (si existe)
+                  if (currentLesson && lessonId) {
+                    const currentIndex = lessons.findIndex(l => l.id === lessonId);
+                    if (currentIndex !== -1 && currentIndex + 1 < lessons.length) {
+                      unlockLesson(lessons[currentIndex + 1].id);
+                    }
+                    
+                    // Otorgar logro
+                    if (currentLesson.achievement) {
+                      earnAchievement(currentLesson.achievement);
+                    }
+                  }
+                  
+                  setIsCompleted(true);
+                }}
+                className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors shadow-md mt-4"
               >
-                {currentQuestionIndex === 4 ? 'Finalizar' : 'Siguiente'}
+                Finalizar lección
               </button>
-            </form>
+            )}
           </>
         )}
       </div>
