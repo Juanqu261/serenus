@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-// Interfaz para los datos del estudiante
-interface StudentData {
-  id: number;
-  name: string;
-  academicAverage: number; // 0-5
-  attendancePercentage: number; // 0-100
-  weeklyDedication: number; // en horas
-  programProgress: number; // 0-100
-  stressLevel: number; // 0-10
-  credits: number; // para calcular el tiempo máximo de dedicación
+// Interfaz para los datos del estudiante que coincide con la API
+interface Estudiante {
+  cedula: number;
+  nombres: string;
+  apellidos: string;
+  fecha_de_nacimiento: string;
+  promedio_actual: number;
+  promedio_acumulado: number;
+  avance: number;
+  horas_de_dedicacion: number;
+}
+
+interface EstudianteConEstres {
+  estudiante: Estudiante;
+  nivel_de_estres: number;
+  escala_de_accion: number;
+  recomendaciones: {
+    descripcion: string;
+  };
 }
 
 // Componente para la recta numérica
@@ -126,33 +135,61 @@ const Thermometer: React.FC<ThermometerProps> = ({ stressLevel }) => {
   );
 };
 
+// Componente para mostrar las recomendaciones
+interface RecommendationProps {
+  text: string;
+}
+
+const Recommendation: React.FC<RecommendationProps> = ({ text }) => {
+  return (
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+      <h3 className="text-lg font-semibold text-blue-800 mb-2">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+        </svg>
+        Recomendación
+      </h3>
+      <p className="text-blue-700">{text}</p>
+    </div>
+  );
+};
+
 const StudentDetail: React.FC = () => {
-  const { studentId } = useParams<{ studentId: string }>();
+  const { studentId } = useParams<{ studentId?: string }>();
   const navigate = useNavigate();
-  const [student, setStudent] = useState<StudentData | null>(null);
+  const [estudianteData, setEstudianteData] = useState<EstudianteConEstres | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulación de carga de datos desde API
-    setLoading(true);
-    
-    // Aquí normalmente harías una llamada a tu API
-    setTimeout(() => {
-      // Datos simulados del estudiante
-      const mockStudentData: StudentData = {
-        id: parseInt(studentId || '0'),
-        name: 'Ana Martínez',
-        academicAverage: 4.2, // de 5
-        attendancePercentage: 85, // %
-        weeklyDedication: 12, // horas
-        programProgress: 68, // %
-        stressLevel: 8, // de 10
-        credits: 6 // cantidad de créditos
-      };
+    const fetchEstudianteDetalle = async () => {
+      if (!studentId) return;
       
-      setStudent(mockStudentData);
-      setLoading(false);
-    }, 800);
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:8000/api/estres-estudiantes/');
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        const data: EstudianteConEstres[] = await response.json();
+        const estudiante = data.find(item => item.estudiante.cedula === parseInt(studentId));
+        
+        if (estudiante) {
+          setEstudianteData(estudiante);
+          setError(null);
+        } else {
+          setError('Estudiante no encontrado');
+        }
+      } catch (err) {
+        console.error('Error al cargar el detalle del estudiante:', err);
+        setError('No se pudieron cargar los datos del estudiante. Por favor, intente más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEstudianteDetalle();
   }, [studentId]);
 
   if (loading) {
@@ -163,10 +200,10 @@ const StudentDetail: React.FC = () => {
     );
   }
 
-  if (!student) {
+  if (error || !estudianteData) {
     return (
       <div className="text-center p-8">
-        <h2 className="text-xl text-red-600">Estudiante no encontrado</h2>
+        <h2 className="text-xl text-red-600">{error || 'Estudiante no encontrado'}</h2>
         <button 
           onClick={() => navigate('/admin')}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors"
@@ -177,11 +214,17 @@ const StudentDetail: React.FC = () => {
     );
   }
 
+  const { estudiante, nivel_de_estres, recomendaciones } = estudianteData;
+  const nombreCompleto = `${estudiante.nombres} ${estudiante.apellidos}`;
+
+  // Calcular créditos estimados (asumiendo 48 horas semanales máximas de dedicación) 
+  const creditosEstimados = Math.ceil(estudiante.horas_de_dedicacion / 3);
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-blue-800">
-          Perfil de {student.name} <span className="text-lg font-normal text-gray-600">#{student.id}</span>
+          Perfil de {nombreCompleto} <span className="text-lg font-normal text-gray-600">#{estudiante.cedula}</span>
         </h1>
         <button 
           onClick={() => navigate('/admin')}
@@ -201,34 +244,33 @@ const StudentDetail: React.FC = () => {
             <h2 className="text-xl font-semibold mb-6 text-gray-800">Datos Académicos</h2>
             
             <NumberLine 
-              label="Promedio académico"
-              value={student.academicAverage}
+              label="Promedio actual"
+              value={estudiante.promedio_actual}
               min={0}
               max={5}
               color="blue"
             />
             
             <NumberLine 
-              label="Porcentaje de asistencia"
-              value={student.attendancePercentage}
+              label="Promedio acumulado"
+              value={estudiante.promedio_acumulado}
               min={0}
-              max={100}
-              unit="%"
+              max={5}
               color="green"
             />
             
             <NumberLine 
               label="Tiempo de dedicación semanal"
-              value={student.weeklyDedication}
+              value={estudiante.horas_de_dedicacion}
               min={0}
-              max={student.credits * 3}
+              max={48} // Asumiendo un máximo de 48 horas semanales
               unit="h"
               color="yellow"
             />
             
             <NumberLine 
               label="Porcentaje de avance en el programa"
-              value={student.programProgress}
+              value={estudiante.avance}
               min={0}
               max={100}
               unit="%"
@@ -237,8 +279,11 @@ const StudentDetail: React.FC = () => {
           </div>
           
           {/* Columna derecha - Termómetro de estrés */}
-          <div className="flex justify-center">
-            <Thermometer stressLevel={student.stressLevel} />
+          <div className="flex flex-col items-center">
+            <Thermometer stressLevel={nivel_de_estres} />
+            
+            {/* Recomendaciones */}
+            <Recommendation text={recomendaciones.descripcion} />
           </div>
         </div>
       </div>

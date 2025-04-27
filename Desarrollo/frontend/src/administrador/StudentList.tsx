@@ -1,39 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Definir la interfaz para estudiantes
-interface Student {
-  id: number;
-  name: string;
-  stressLevel: number;
+// Definir la interfaz para estudiantes que coincide con la API
+interface Estudiante {
+  cedula: number;
+  nombres: string;
+  apellidos: string;
+  fecha_de_nacimiento: string;
+  promedio_actual: number;
+  promedio_acumulado: number;
+  avance: number;
+  horas_de_dedicacion: number;
+}
+
+interface EstudianteConEstres {
+  estudiante: Estudiante;
+  nivel_de_estres: number;
+  escala_de_accion: number;
+  recomendaciones: {
+    descripcion: string;
+  };
 }
 
 const StudentList: React.FC = () => {
-  const [students, setStudents] = useState<Student[]>([]);
+  const [estudiantes, setEstudiantes] = useState<EstudianteConEstres[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Datos de estudiantes de ejemplo (en una app real, se cargarían de una API)
+  // Cargar datos de estudiantes desde la API
   useEffect(() => {
-    // Simular carga de datos
-    const mockStudents: Student[] = [
-      { id: 1, name: 'Ana Martínez', stressLevel: 7 },
-      { id: 2, name: 'Carlos López', stressLevel: 4 },
-      { id: 3, name: 'María Rodríguez', stressLevel: 8 },
-      { id: 4, name: 'Juan Gómez', stressLevel: 3 },
-      { id: 5, name: 'Sofía Hernández', stressLevel: 6 },
-      { id: 6, name: 'Diego Pérez', stressLevel: 9 },
-      { id: 7, name: 'Valentina Torres', stressLevel: 5 },
-      { id: 8, name: 'Mateo Sánchez', stressLevel: 2 },
-    ];
-    setStudents(mockStudents);
+    const fetchEstudiantes = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:8000/api/estres-estudiantes/');
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const data: EstudianteConEstres[] = await response.json();
+        setEstudiantes(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error al cargar los estudiantes:', err);
+        setError('No se pudieron cargar los datos de estudiantes. Por favor, intente más tarde.');
+        // Usar datos de respaldo en caso de error
+        setEstudiantes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEstudiantes();
   }, []);
 
   // Función para navegar a la vista detallada
-  const handleRowClick = (studentId: number) => {
-    // Use absolute path for navigation
-    navigate(`/admin/student/${studentId}`);
+  const handleRowClick = (cedula: number) => {
+    navigate(`/admin/student/${cedula}`);
   };
 
   // Función para ordenar por nivel de estrés
@@ -41,14 +65,19 @@ const StudentList: React.FC = () => {
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
+  // Obtener nombre completo del estudiante
+  const getNombreCompleto = (estudiante: Estudiante) => {
+    return `${estudiante.nombres} ${estudiante.apellidos}`;
+  };
+
   // Filtrar y ordenar estudiantes
-  const filteredAndSortedStudents = students
-    .filter(student => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredAndSortedStudents = estudiantes
+    .filter(item => getNombreCompleto(item.estudiante).toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => {
       if (sortOrder === 'asc') {
-        return a.stressLevel - b.stressLevel;
+        return a.nivel_de_estres - b.nivel_de_estres;
       } else {
-        return b.stressLevel - a.stressLevel;
+        return b.nivel_de_estres - a.nivel_de_estres;
       }
     });
 
@@ -71,68 +100,78 @@ const StudentList: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full">
-          <thead className="bg-blue-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nombre
-              </th>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                onClick={toggleSortOrder}
-              >
-                Nivel de Estrés
-                <span className="ml-1">
-                  {sortOrder === 'asc' ? '↑' : '↓'}
-                </span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filteredAndSortedStudents.length > 0 ? (
-              filteredAndSortedStudents.map(student => (
-                <tr 
-                  key={student.id} 
-                  onClick={() => handleRowClick(student.id)}
-                  className="hover:bg-gray-50 cursor-pointer transition-colors"
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      ) : error ? (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-lg shadow">
+          <table className="min-w-full">
+            <thead className="bg-blue-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nombre
+                </th>
+                <th 
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  onClick={toggleSortOrder}
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {student.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex items-center">
-                      <span className={`
-                        mr-2 font-semibold
-                        ${student.stressLevel <= 3 ? 'text-green-600' : ''}
-                        ${student.stressLevel > 3 && student.stressLevel <= 6 ? 'text-yellow-600' : ''}
-                        ${student.stressLevel > 6 ? 'text-red-600' : ''}
-                      `}>
-                        {student.stressLevel}
-                      </span>
-                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${
-                            student.stressLevel <= 3 ? 'bg-green-500' : 
-                            student.stressLevel <= 6 ? 'bg-yellow-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${(student.stressLevel / 10) * 100}%` }}
-                        ></div>
+                  Nivel de Estrés
+                  <span className="ml-1">
+                    {sortOrder === 'asc' ? '↑' : '↓'}
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {filteredAndSortedStudents.length > 0 ? (
+                filteredAndSortedStudents.map(item => (
+                  <tr 
+                    key={item.estudiante.cedula} 
+                    onClick={() => handleRowClick(item.estudiante.cedula)}
+                    className="hover:bg-gray-50 cursor-pointer transition-colors"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {getNombreCompleto(item.estudiante)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <div className="flex items-center">
+                        <span className={`
+                          mr-2 font-semibold
+                          ${item.nivel_de_estres <= 3 ? 'text-green-600' : ''}
+                          ${item.nivel_de_estres > 3 && item.nivel_de_estres <= 6 ? 'text-yellow-600' : ''}
+                          ${item.nivel_de_estres > 6 ? 'text-red-600' : ''}
+                        `}>
+                          {item.nivel_de_estres.toFixed(1)}
+                        </span>
+                        <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${
+                              item.nivel_de_estres <= 3 ? 'bg-green-500' : 
+                              item.nivel_de_estres <= 6 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${(item.nivel_de_estres / 10) * 100}%` }}
+                          ></div>
+                        </div>
                       </div>
-                    </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={2} className="px-6 py-4 text-center text-sm text-gray-500">
+                    No se encontraron estudiantes
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={2} className="px-6 py-4 text-center text-sm text-gray-500">
-                  No se encontraron estudiantes
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
